@@ -17,6 +17,9 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
   updateUserRole: (role: UserRole) => void;
+  createUser: (userData: Omit<User, 'id'> & { password: string }) => Promise<boolean>;
+  getAllUsers: () => User[];
+  deleteUser: (userId: string) => boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
