@@ -11,7 +11,7 @@ import { useData } from '@/contexts/DataContext';
 import { useToast } from '@/hooks/use-toast';
 
 const ClientsManagement = () => {
-  const [clients, setClients] = useState<Client[]>(mockClients);
+  const { clients, addClient, updateClient, deleteClient } = useData();
   const [searchTerm, setSearchTerm] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingClient, setEditingClient] = useState<Client | null>(null);
