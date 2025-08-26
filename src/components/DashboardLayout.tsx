@@ -71,6 +71,13 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
       category: 'main',
       requiresPermission: 'canViewAllClients'
     },
+    {
+      id: 'user-management',
+      label: 'User Management',
+      icon: UserCheck,
+      category: 'main',
+      requiresPermission: 'canManageUsers'
+    },
   ];
 
   const insuranceServices = [
