@@ -600,11 +600,7 @@ const DashboardApp = () => {
       case 'car-insurance':
         return <CarInsuranceManagement />;
       case 'car-tracker':
-        return <ServicePlaceholder 
-          serviceName="Car Tracker Service" 
-          description="Vehicle tracking and monitoring system for enhanced security and fleet management."
-          icon={Car}
-        />;
+        return <CarTrackerService />;
       case 'bike-insurance':
         return <BikeInsuranceManagement />;
       case 'life-insurance':
