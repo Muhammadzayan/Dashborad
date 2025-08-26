@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
 import { UserRoleProvider, useUserRole } from '@/contexts/UserRoleContext';
-import { DataProvider } from '@/contexts/DataContext';
+import { DataProvider, useData } from '@/contexts/DataContext';
 import LoginPage from '@/components/LoginPage';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import GetQuoteModal from '@/components/GetQuoteModal';
 import DashboardLayout from '@/components/DashboardLayout';
 import DashboardHome from '@/components/DashboardHome';
 import PoliciesManagement from '@/components/PoliciesManagement';
