@@ -64,7 +64,7 @@ const ClientsManagement = () => {
   };
 
   const handleDelete = (clientId: string) => {
-    setClients(clients.filter(c => c.id !== clientId));
+    deleteClient(clientId);
     toast({
       title: "Client Deleted",
       description: "Client has been successfully deleted.",
