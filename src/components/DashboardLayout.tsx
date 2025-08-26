@@ -2,11 +2,11 @@ import React, { ReactNode, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUserRole } from '@/contexts/UserRoleContext';
-import { 
-  LayoutDashboard, 
-  FileText, 
-  Users, 
-  LogOut, 
+import {
+  LayoutDashboard,
+  FileText,
+  Users,
+  LogOut,
   Building2,
   Settings,
   Car,
@@ -22,7 +22,8 @@ import {
   Eye,
   Lock,
   User,
-  ClipboardList
+  ClipboardList,
+  AlertTriangle
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
