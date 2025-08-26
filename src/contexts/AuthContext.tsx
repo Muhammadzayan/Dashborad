@@ -36,31 +36,61 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
-// Mock users for demonstration
-const mockUsers: Record<string, User> = {
-  'admin@igilife.com': {
+// Default demo users
+const defaultUsers = [
+  {
     id: '1',
     name: 'Muhammad Zayan',
     email: 'admin@igilife.com',
-    role: 'admin',
+    role: 'admin' as UserRole,
     department: 'Administration',
-    agentId: 'ADM001'
+    agentId: 'ADM001',
+    password: 'password123'
   },
-  'agent@igilife.com': {
+  {
     id: '2',
     name: 'Sarah Ahmed',
     email: 'agent@igilife.com',
-    role: 'agent',
+    role: 'agent' as UserRole,
     department: 'Sales',
-    agentId: 'AGT001'
+    agentId: 'AGT001',
+    password: 'password123'
   },
-  'client@igilife.com': {
+  {
     id: '3',
     name: 'Ahmed Ali',
     email: 'client@igilife.com',
-    role: 'user',
-    department: 'Client'
+    role: 'user' as UserRole,
+    department: 'Client',
+    password: 'password123'
   }
+];
+
+// User storage with passwords
+interface UserWithPassword extends User {
+  password: string;
+}
+
+// Initialize users in localStorage if not exists
+const initializeUsers = (): UserWithPassword[] => {
+  const storedUsers = localStorage.getItem('igilife_users');
+  if (storedUsers) {
+    return JSON.parse(storedUsers);
+  } else {
+    localStorage.setItem('igilife_users', JSON.stringify(defaultUsers));
+    return defaultUsers;
+  }
+};
+
+// Get all users from localStorage
+const getStoredUsers = (): UserWithPassword[] => {
+  const storedUsers = localStorage.getItem('igilife_users');
+  return storedUsers ? JSON.parse(storedUsers) : defaultUsers;
+};
+
+// Save users to localStorage
+const saveUsers = (users: UserWithPassword[]): void => {
+  localStorage.setItem('igilife_users', JSON.stringify(users));
 };
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
