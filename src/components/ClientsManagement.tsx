@@ -6,7 +6,8 @@ import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Plus, Edit, Trash2, Search, Mail, Phone, MapPin } from 'lucide-react';
-import { mockClients, Client } from '@/data/mockData';
+import { Client } from '@/data/mockData';
+import { useData } from '@/contexts/DataContext';
 import { useToast } from '@/hooks/use-toast';
 
 const ClientsManagement = () => {
