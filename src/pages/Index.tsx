@@ -150,17 +150,212 @@ const MyPoliciesView = () => {
 
 const ClaimsView = () => {
   const { user } = useAuth();
+  const [showClaimForm, setShowClaimForm] = useState(false);
+  const [claimFormData, setClaimFormData] = useState({
+    policyNo: '',
+    claimType: '',
+    incidentDate: '',
+    description: '',
+    estimatedAmount: ''
+  });
+
+  // Mock claims data for demonstration
+  const mockClaims = [
+    {
+      id: 'CLM001',
+      policyNo: 'IGI-LIFE-001',
+      claimType: 'Life Insurance',
+      amount: 50000,
+      status: 'Under Review',
+      submittedDate: '2024-01-15',
+      description: 'Medical claim for treatment'
+    },
+    {
+      id: 'CLM002',
+      policyNo: 'IGI-CAR-002',
+      claimType: 'Car Insurance',
+      amount: 150000,
+      status: 'Approved',
+      submittedDate: '2024-01-10',
+      description: 'Vehicle accident claim'
+    }
+  ];
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'Approved': return 'bg-green-100 text-green-800';
+      case 'Under Review': return 'bg-yellow-100 text-yellow-800';
+      case 'Rejected': return 'bg-red-100 text-red-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-PK', {
+      style: 'currency',
+      currency: 'PKR',
+      minimumFractionDigits: 0,
+    }).format(amount);
+  };
+
   return (
     <div className="space-y-4 lg:space-y-6">
-      <div className="bg-gradient-secondary p-4 lg:p-6 rounded-xl text-white">
+      <div className="bg-gradient-to-r from-green-500 to-emerald-600 p-4 lg:p-6 rounded-xl text-white">
         <h2 className="text-xl lg:text-2xl font-bold mb-2">Claims Management</h2>
         <p className="text-green-100">File and track your insurance claims</p>
+        <div className="flex items-center gap-4 mt-4">
+          <div className="flex items-center gap-2">
+            <Shield className="h-5 w-5" />
+            <span className="text-sm">Total Claims: {mockClaims.length}</span>
+          </div>
+          <Button
+            variant="secondary"
+            className="bg-white/20 hover:bg-white/30 text-white border-white/30"
+            onClick={() => setShowClaimForm(true)}
+          >
+            File New Claim
+          </Button>
+        </div>
       </div>
-      <ServicePlaceholder 
-        serviceName="Claims Management" 
-        description="File new insurance claims and track the status of your existing claims."
-        icon={() => <div className="text-2xl lg:text-4xl">🛡️</div>}
-      />
+
+      {/* Claims List */}
+      <div className="grid gap-4">
+        {mockClaims.map((claim) => (
+          <Card key={claim.id} className="shadow-card">
+            <CardContent className="p-6">
+              <div className="flex items-start justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                    <Shield className="h-6 w-6 text-green-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg">Claim #{claim.id}</h3>
+                    <p className="text-muted-foreground">{claim.claimType} - {claim.policyNo}</p>
+                    <div className="flex items-center gap-4 mt-2 text-sm">
+                      <span>Amount: {formatCurrency(claim.amount)}</span>
+                      <span>Submitted: {new Date(claim.submittedDate).toLocaleDateString()}</span>
+                    </div>
+                  </div>
+                </div>
+                <Badge className={getStatusColor(claim.status)}>
+                  {claim.status}
+                </Badge>
+              </div>
+              <div className="mt-4 p-3 bg-muted rounded-lg">
+                <p className="text-sm">{claim.description}</p>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {mockClaims.length === 0 && (
+        <Card className="shadow-card">
+          <CardContent className="text-center py-12">
+            <Shield className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-muted-foreground mb-2">No Claims Filed</h3>
+            <p className="text-sm text-muted-foreground mb-6">
+              You haven't filed any insurance claims yet.
+            </p>
+            <Button
+              className="bg-gradient-primary"
+              onClick={() => setShowClaimForm(true)}
+            >
+              File Your First Claim
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Claim Form Modal */}
+      {showClaimForm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <Card className="w-full max-w-2xl">
+            <CardContent className="p-6">
+              <h3 className="text-xl font-bold mb-4">File New Claim</h3>
+              <div className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium">Policy Number</label>
+                  <input
+                    type="text"
+                    className="w-full mt-1 p-2 border rounded"
+                    value={claimFormData.policyNo}
+                    onChange={(e) => setClaimFormData({...claimFormData, policyNo: e.target.value})}
+                    placeholder="Enter your policy number"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Claim Type</label>
+                  <select
+                    className="w-full mt-1 p-2 border rounded"
+                    value={claimFormData.claimType}
+                    onChange={(e) => setClaimFormData({...claimFormData, claimType: e.target.value})}
+                  >
+                    <option value="">Select claim type</option>
+                    <option value="life">Life Insurance</option>
+                    <option value="car">Car Insurance</option>
+                    <option value="health">Health Insurance</option>
+                    <option value="travel">Travel Insurance</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Incident Date</label>
+                  <input
+                    type="date"
+                    className="w-full mt-1 p-2 border rounded"
+                    value={claimFormData.incidentDate}
+                    onChange={(e) => setClaimFormData({...claimFormData, incidentDate: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Description</label>
+                  <textarea
+                    className="w-full mt-1 p-2 border rounded h-24"
+                    value={claimFormData.description}
+                    onChange={(e) => setClaimFormData({...claimFormData, description: e.target.value})}
+                    placeholder="Describe the incident and your claim"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Estimated Amount (PKR)</label>
+                  <input
+                    type="number"
+                    className="w-full mt-1 p-2 border rounded"
+                    value={claimFormData.estimatedAmount}
+                    onChange={(e) => setClaimFormData({...claimFormData, estimatedAmount: e.target.value})}
+                    placeholder="Enter estimated claim amount"
+                  />
+                </div>
+              </div>
+              <div className="flex gap-2 mt-6">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowClaimForm(false)}
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  className="flex-1 bg-gradient-primary"
+                  onClick={() => {
+                    // Handle claim submission here
+                    setShowClaimForm(false);
+                    setClaimFormData({
+                      policyNo: '',
+                      claimType: '',
+                      incidentDate: '',
+                      description: '',
+                      estimatedAmount: ''
+                    });
+                  }}
+                >
+                  Submit Claim
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
   );
 };
