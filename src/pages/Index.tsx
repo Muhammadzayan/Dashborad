@@ -211,7 +211,9 @@ const AuthWrapper = () => {
 const Index = () => {
   return (
     <AuthProvider>
-      <AuthWrapper />
+      <DataProvider>
+        <AuthWrapper />
+      </DataProvider>
     </AuthProvider>
   );
 };
