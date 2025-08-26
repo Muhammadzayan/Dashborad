@@ -606,11 +606,7 @@ const DashboardApp = () => {
       case 'life-insurance':
         return <LifeInsuranceManagement />;
       case 'employee-life':
-        return <ServicePlaceholder 
-          serviceName="Employee Life Insurance" 
-          description="Group life insurance plans for employees with comprehensive coverage options."
-          icon={UserCheck}
-        />;
+        return <EmployeeLifeService />;
       case 'corporate-insurance':
         return <CorporateInsuranceManagement />;
       case 'travel-insurance':
