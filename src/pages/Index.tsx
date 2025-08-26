@@ -183,6 +183,8 @@ const DashboardApp = () => {
         return <ClaimsView />;
       case 'profile':
         return <ProfileView />;
+      case 'user-management':
+        return <UserManagement />;
       default:
         return <DashboardHome />;
     }
