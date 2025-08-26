@@ -14,7 +14,17 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const { login } = useAuth();
+  const [isRegistering, setIsRegistering] = useState(false);
+  const [registerData, setRegisterData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    role: 'user' as 'admin' | 'agent' | 'user',
+    department: '',
+    agentId: ''
+  });
+  const { login, createUser } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
