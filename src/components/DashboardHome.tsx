@@ -87,6 +87,11 @@ const DashboardHome = () => {
                     <ClipboardList className="h-5 w-5" />
                     <span className="text-sm">Active Policies: {userPolicies.length}</span>
                   </div>
+                  <GetQuoteModal>
+                    <Button variant="secondary" className="bg-white/20 hover:bg-white/30 text-white border-white/30">
+                      Get Additional Coverage
+                    </Button>
+                  </GetQuoteModal>
                 </div>
               </div>
               <div className="text-right">
