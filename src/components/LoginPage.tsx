@@ -212,7 +212,7 @@ const LoginPage = () => {
           </Card>
 
           {/* Demo Accounts */}
-          <Card className="shadow-lg border-0 bg-white/60 backdrop-blur">
+          <Card className="shadow-lg border-0 bg-white/70 backdrop-blur-md hover:bg-white/80 transition-all duration-300">
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">
                 <Shield className="h-5 w-5" />
