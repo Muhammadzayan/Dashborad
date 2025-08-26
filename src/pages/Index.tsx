@@ -614,6 +614,8 @@ const DashboardApp = () => {
         return <TravelInsuranceManagement />;
       case 'employee-health':
         return <EmployeeHealthManagement />;
+      case 'services':
+        return <ServicesPage />;
       case 'claims':
         return <ClaimsView />;
       case 'profile':
