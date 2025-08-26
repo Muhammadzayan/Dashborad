@@ -144,7 +144,7 @@ const LoginPage = () => {
 
         {/* Right Side - Login Form */}
         <div className="space-y-6">
-          <Card className="shadow-2xl border-0 bg-white/80 backdrop-blur">
+          <Card className="shadow-2xl border-0 bg-white/90 backdrop-blur-md hover:shadow-3xl transition-all duration-300 hover:scale-[1.02]">
             <CardHeader className="space-y-1 text-center">
               <CardTitle className="text-2xl font-bold">Welcome Back</CardTitle>
               <CardDescription>
