@@ -363,7 +363,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
       {/* Main Content */}
       <div className="ml-72">
         {/* Header */}
-        <header className="bg-white border-b border-border px-6 py-4 shadow-sm">
+        <header className="bg-white/80 backdrop-blur-md border-b border-border px-6 py-4 shadow-lg sticky top-0 z-40">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold capitalize text-foreground flex items-center gap-2">
