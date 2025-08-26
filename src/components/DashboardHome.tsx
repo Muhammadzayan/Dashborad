@@ -26,6 +26,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Cell, 
 import { mockPolicies, mockClients } from '@/data/mockData';
 import { isExpiringSoon, getDaysUntil, formatDate } from '@/utils/dateUtils';
 import NotificationCenter from './NotificationCenter';
+import GetQuoteModal from './GetQuoteModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUserRole } from '@/contexts/UserRoleContext';
 
