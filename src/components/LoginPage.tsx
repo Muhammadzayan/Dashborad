@@ -240,62 +240,183 @@ const LoginPage = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email Address</Label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="Enter your email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                      className="pl-10 h-12"
-                    />
+              {!isRegistering ? (
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email Address</Label>
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="Enter your email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                        className="pl-10 h-12"
+                      />
+                    </div>
                   </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="password">Password</Label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                    <Input
-                      id="password"
-                      type={showPassword ? 'text' : 'password'}
-                      placeholder="Enter your password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                      className="pl-10 pr-10 h-12"
-                    />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      className="absolute right-1 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0"
-                      onClick={() => setShowPassword(!showPassword)}
-                    >
-                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                    </Button>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="password">Password</Label>
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                      <Input
+                        id="password"
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder="Enter your password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                        className="pl-10 pr-10 h-12"
+                      />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="absolute right-1 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0"
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </Button>
+                    </div>
                   </div>
-                </div>
 
-                {error && (
-                  <Alert variant="destructive">
-                    <AlertDescription>{error}</AlertDescription>
-                  </Alert>
-                )}
+                  {error && (
+                    <Alert variant={error.includes('successfully') || error.includes('submitted') ? 'default' : 'destructive'}>
+                      <AlertDescription>{error}</AlertDescription>
+                    </Alert>
+                  )}
 
-                <Button
-                  type="submit"
-                  className="w-full h-12 bg-gradient-primary hover:bg-primary-dark text-white font-semibold shadow-lg"
-                  disabled={isLoading}
-                >
-                  {isLoading ? 'Signing In...' : 'Sign In'}
-                </Button>
-              </form>
+                  <Button
+                    type="submit"
+                    className="w-full h-12 bg-gradient-primary hover:bg-primary-dark text-white font-semibold shadow-lg"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? 'Signing In...' : 'Sign In'}
+                  </Button>
+                </form>
+              ) : (
+                <form onSubmit={handleRegister} className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="registerName">Full Name</Label>
+                      <Input
+                        id="registerName"
+                        value={registerData.name}
+                        onChange={(e) => setRegisterData({...registerData, name: e.target.value})}
+                        placeholder="Enter your full name"
+                        required
+                        className="h-10"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="registerEmail">Email Address</Label>
+                      <Input
+                        id="registerEmail"
+                        type="email"
+                        value={registerData.email}
+                        onChange={(e) => setRegisterData({...registerData, email: e.target.value})}
+                        placeholder="Enter your email"
+                        required
+                        className="h-10"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="registerPassword">Password</Label>
+                      <Input
+                        id="registerPassword"
+                        type="password"
+                        value={registerData.password}
+                        onChange={(e) => setRegisterData({...registerData, password: e.target.value})}
+                        placeholder="Create a password"
+                        required
+                        minLength={6}
+                        className="h-10"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="confirmPassword">Confirm Password</Label>
+                      <Input
+                        id="confirmPassword"
+                        type="password"
+                        value={registerData.confirmPassword}
+                        onChange={(e) => setRegisterData({...registerData, confirmPassword: e.target.value})}
+                        placeholder="Confirm your password"
+                        required
+                        minLength={6}
+                        className="h-10"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="role">Account Type</Label>
+                    <Select value={registerData.role} onValueChange={(value: 'admin' | 'agent' | 'user') => setRegisterData({...registerData, role: value})}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="user">
+                          <div className="flex items-center gap-2">
+                            <User className="h-4 w-4" />
+                            Client User
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="agent">
+                          <div className="flex items-center gap-2">
+                            <UserCheck className="h-4 w-4" />
+                            Insurance Agent (Requires Approval)
+                          </div>
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {registerData.role === 'agent' && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="department">Department</Label>
+                        <Input
+                          id="department"
+                          value={registerData.department}
+                          onChange={(e) => setRegisterData({...registerData, department: e.target.value})}
+                          placeholder="e.g., Sales, Customer Service"
+                          className="h-10"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="agentId">Requested Agent ID</Label>
+                        <Input
+                          id="agentId"
+                          value={registerData.agentId}
+                          onChange={(e) => setRegisterData({...registerData, agentId: e.target.value})}
+                          placeholder="e.g., AGT001"
+                          className="h-10"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {error && (
+                    <Alert variant={error.includes('successfully') || error.includes('submitted') ? 'default' : 'destructive'}>
+                      <AlertDescription>{error}</AlertDescription>
+                    </Alert>
+                  )}
+
+                  <Button
+                    type="submit"
+                    className="w-full h-12 bg-gradient-primary hover:bg-primary-dark text-white font-semibold shadow-lg"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? 'Creating Account...' : 'Create Account'}
+                  </Button>
+                </form>
+              )}
             </CardContent>
           </Card>
 
