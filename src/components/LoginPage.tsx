@@ -78,6 +78,63 @@ const LoginPage = () => {
     setPassword(demoPassword);
   };
 
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError('');
+
+    // Validation
+    if (registerData.password !== registerData.confirmPassword) {
+      setError('Passwords do not match.');
+      setIsLoading(false);
+      return;
+    }
+
+    if (registerData.password.length < 6) {
+      setError('Password must be at least 6 characters long.');
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      if (registerData.role === 'agent') {
+        // For agent registration, create a pending approval request
+        setError('Agent registration request submitted. Admin will review and approve your account within 24 hours.');
+        setIsLoading(false);
+        return;
+      }
+
+      const success = await createUser({
+        name: registerData.name,
+        email: registerData.email,
+        password: registerData.password,
+        role: registerData.role,
+        department: registerData.department || undefined,
+        agentId: registerData.agentId || undefined
+      });
+
+      if (success) {
+        setError('Account created successfully! You can now login with your credentials.');
+        setIsRegistering(false);
+        setRegisterData({
+          name: '',
+          email: '',
+          password: '',
+          confirmPassword: '',
+          role: 'user',
+          department: '',
+          agentId: ''
+        });
+      } else {
+        setError('Email already exists. Please use a different email or try logging in.');
+      }
+    } catch (err) {
+      setError('Registration failed. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50 p-4 relative overflow-hidden">
       {/* Animated background elements */}
