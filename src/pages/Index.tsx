@@ -183,9 +183,14 @@ const ProfileView = () => {
 };
 
 // Import icons for placeholders
-import { 
-  Car, 
-  UserCheck
+import {
+  Car,
+  UserCheck,
+  FileText,
+  Bike,
+  Heart,
+  Plane,
+  Shield
 } from 'lucide-react';
 
 const DashboardApp = () => {
