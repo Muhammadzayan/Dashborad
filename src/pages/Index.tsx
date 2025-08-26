@@ -361,18 +361,167 @@ const ClaimsView = () => {
 };
 
 const ProfileView = () => {
-  const { user } = useAuth();
+  const { user, updateUserRole } = useAuth();
+  const [isEditing, setIsEditing] = useState(false);
+  const [profileData, setProfileData] = useState({
+    name: user?.name || '',
+    email: user?.email || '',
+    department: user?.department || '',
+    agentId: user?.agentId || ''
+  });
+
+  const handleSave = () => {
+    // In a real app, this would update the user profile
+    setIsEditing(false);
+    // For now, we'll just show a success message
+    alert('Profile updated successfully!');
+  };
+
   return (
     <div className="space-y-4 lg:space-y-6">
-      <div className="bg-purple-600 p-4 lg:p-6 rounded-xl text-white">
+      <div className="bg-gradient-to-r from-purple-500 to-indigo-600 p-4 lg:p-6 rounded-xl text-white">
         <h2 className="text-xl lg:text-2xl font-bold mb-2">Profile Settings</h2>
         <p className="text-purple-100">Manage your personal information and preferences</p>
+        <div className="flex items-center gap-4 mt-4">
+          <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
+            <span className="text-2xl font-bold">{user?.name?.charAt(0)}</span>
+          </div>
+          <div>
+            <h3 className="text-xl font-semibold">{user?.name}</h3>
+            <p className="text-purple-100 capitalize">{user?.role}</p>
+          </div>
+        </div>
       </div>
-      <ServicePlaceholder 
-        serviceName="Profile Settings" 
-        description="Manage your personal information, contact details, and account preferences."
-        icon={() => <div className="text-2xl lg:text-4xl">👤</div>}
-      />
+
+      <div className="grid gap-6 lg:grid-cols-2">
+        {/* Personal Information */}
+        <Card className="shadow-card">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold">Personal Information</h3>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsEditing(!isEditing)}
+              >
+                {isEditing ? 'Cancel' : 'Edit'}
+              </Button>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="text-sm font-medium text-muted-foreground">Full Name</label>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    className="w-full mt-1 p-2 border rounded"
+                    value={profileData.name}
+                    onChange={(e) => setProfileData({...profileData, name: e.target.value})}
+                  />
+                ) : (
+                  <p className="text-lg">{user?.name}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-muted-foreground">Email Address</label>
+                {isEditing ? (
+                  <input
+                    type="email"
+                    className="w-full mt-1 p-2 border rounded"
+                    value={profileData.email}
+                    onChange={(e) => setProfileData({...profileData, email: e.target.value})}
+                  />
+                ) : (
+                  <p className="text-lg">{user?.email}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-muted-foreground">Department</label>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    className="w-full mt-1 p-2 border rounded"
+                    value={profileData.department}
+                    onChange={(e) => setProfileData({...profileData, department: e.target.value})}
+                  />
+                ) : (
+                  <p className="text-lg">{user?.department || 'Not specified'}</p>
+                )}
+              </div>
+
+              {user?.agentId && (
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground">Agent ID</label>
+                  {isEditing ? (
+                    <input
+                      type="text"
+                      className="w-full mt-1 p-2 border rounded"
+                      value={profileData.agentId}
+                      onChange={(e) => setProfileData({...profileData, agentId: e.target.value})}
+                    />
+                  ) : (
+                    <p className="text-lg font-mono">{user?.agentId}</p>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {isEditing && (
+              <div className="mt-6">
+                <Button onClick={handleSave} className="bg-gradient-primary">
+                  Save Changes
+                </Button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Account Settings */}
+        <Card className="shadow-card">
+          <CardContent className="p-6">
+            <h3 className="text-lg font-semibold mb-4">Account Settings</h3>
+
+            <div className="space-y-4">
+              <div>
+                <label className="text-sm font-medium text-muted-foreground">Account Type</label>
+                <Badge className="mt-1 block w-fit">
+                  {user?.role === 'admin' && <UserCheck className="h-3 w-3 mr-1" />}
+                  {user?.role === 'agent' && <UserCheck className="h-3 w-3 mr-1" />}
+                  {user?.role === 'user' && <Shield className="h-3 w-3 mr-1" />}
+                  <span className="capitalize">{user?.role}</span>
+                </Badge>
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-muted-foreground">Member Since</label>
+                <p className="text-lg">January 2024</p>
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-muted-foreground">Last Login</label>
+                <p className="text-lg">Today, {new Date().toLocaleTimeString()}</p>
+              </div>
+            </div>
+
+            <div className="mt-6 pt-6 border-t">
+              <h4 className="font-medium mb-3">Security</h4>
+              <div className="space-y-2">
+                <Button variant="outline" className="w-full justify-start">
+                  Change Password
+                </Button>
+                <Button variant="outline" className="w-full justify-start">
+                  Two-Factor Authentication
+                </Button>
+                <Button variant="outline" className="w-full justify-start text-red-600 hover:text-red-700">
+                  Download Account Data
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };
