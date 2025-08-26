@@ -399,8 +399,10 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         </header>
 
         {/* Content */}
-        <main className="p-6">
-          {children}
+        <main className="p-6 min-h-screen bg-gradient-to-br from-background via-background to-secondary/30">
+          <div className="animate-fade-in">
+            {children}
+          </div>
         </main>
       </div>
     </div>
