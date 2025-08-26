@@ -14,6 +14,7 @@ import LifeInsuranceManagement from '@/components/LifeInsuranceManagement';
 import EmployeeHealthManagement from '@/components/EmployeeHealthManagement';
 import CorporateInsuranceManagement from '@/components/CorporateInsuranceManagement';
 import UserManagement from '@/components/UserManagement';
+import LeadsManagement from '@/components/LeadsManagement';
 
 // Service placeholder components for remaining services
 const ServicePlaceholder = ({ serviceName, description, icon: Icon }: { 
