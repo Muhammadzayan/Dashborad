@@ -185,22 +185,22 @@ interface DataProviderProps {
 }
 
 // Storage helpers
-const getStoredData = <T>(key: string, defaultValue: T): T => {
+function getStoredData<T>(key: string, defaultValue: T): T {
   try {
     const stored = localStorage.getItem(key);
     return stored ? JSON.parse(stored) : defaultValue;
   } catch {
     return defaultValue;
   }
-};
+}
 
-const setStoredData = <T>(key: string, data: T): void => {
+function setStoredData<T>(key: string, data: T): void {
   try {
     localStorage.setItem(key, JSON.stringify(data));
   } catch (error) {
     console.error('Failed to store data:', error);
   }
-};
+}
 
 export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
   // Initialize data states
@@ -315,7 +315,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
     setCarPolicies(prev => prev.filter(policy => policy.id !== id));
   };
 
-  // Similar functions for other insurance types
+  // Bike Insurance functions
   const addBikePolicy = (policyData: Omit<BikeInsurancePolicy, 'id' | 'createdAt'>) => {
     const newPolicy: BikeInsurancePolicy = {
       ...policyData,
@@ -335,6 +335,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
     setBikePolicies(prev => prev.filter(policy => policy.id !== id));
   };
 
+  // Life Insurance functions
   const addLifePolicy = (policyData: Omit<LifeInsurancePolicy, 'id' | 'createdAt'>) => {
     const newPolicy: LifeInsurancePolicy = {
       ...policyData,
@@ -354,6 +355,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
     setLifePolicies(prev => prev.filter(policy => policy.id !== id));
   };
 
+  // Travel Insurance functions
   const addTravelPolicy = (policyData: Omit<TravelInsurancePolicy, 'id' | 'createdAt'>) => {
     const newPolicy: TravelInsurancePolicy = {
       ...policyData,
@@ -373,6 +375,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
     setTravelPolicies(prev => prev.filter(policy => policy.id !== id));
   };
 
+  // Employee Health functions
   const addEmployeeHealthPolicy = (policyData: Omit<EmployeeHealthPolicy, 'id' | 'createdAt'>) => {
     const newPolicy: EmployeeHealthPolicy = {
       ...policyData,
@@ -392,6 +395,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
     setEmployeeHealthPolicies(prev => prev.filter(policy => policy.id !== id));
   };
 
+  // Corporate Insurance functions
   const addCorporatePolicy = (policyData: Omit<CorporateInsurancePolicy, 'id' | 'createdAt'>) => {
     const newPolicy: CorporateInsurancePolicy = {
       ...policyData,
