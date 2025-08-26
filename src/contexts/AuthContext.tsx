@@ -94,6 +94,9 @@ const saveUsers = (users: UserWithPassword[]): void => {
 };
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+  // Initialize users on first load
+  useState(() => initializeUsers());
+
   const [user, setUser] = useState<User | null>(() => {
     // Check if user is stored in localStorage
     const storedUser = localStorage.getItem('user');
@@ -101,14 +104,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   });
 
   const login = async (email: string, password: string): Promise<boolean> => {
-    // Mock authentication logic
-    if (password === 'password123') {
-      const foundUser = mockUsers[email.toLowerCase()];
-      if (foundUser) {
-        setUser(foundUser);
-        localStorage.setItem('user', JSON.stringify(foundUser));
-        return true;
-      }
+    const users = getStoredUsers();
+    const foundUser = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+
+    if (foundUser && foundUser.password === password) {
+      // Remove password from user object before storing in context
+      const { password: _, ...userWithoutPassword } = foundUser;
+      setUser(userWithoutPassword);
+      localStorage.setItem('user', JSON.stringify(userWithoutPassword));
+      return true;
     }
     return false;
   };
@@ -123,7 +127,54 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const updatedUser = { ...user, role };
       setUser(updatedUser);
       localStorage.setItem('user', JSON.stringify(updatedUser));
+
+      // Also update the user in the stored users list
+      const users = getStoredUsers();
+      const updatedUsers = users.map(u =>
+        u.id === user.id ? { ...u, role } : u
+      );
+      saveUsers(updatedUsers);
     }
+  };
+
+  const createUser = async (userData: Omit<User, 'id'> & { password: string }): Promise<boolean> => {
+    const users = getStoredUsers();
+
+    // Check if email already exists
+    if (users.find(u => u.email.toLowerCase() === userData.email.toLowerCase())) {
+      return false; // Email already exists
+    }
+
+    const newUser: UserWithPassword = {
+      ...userData,
+      id: Date.now().toString(), // Simple ID generation
+    };
+
+    const updatedUsers = [...users, newUser];
+    saveUsers(updatedUsers);
+    return true;
+  };
+
+  const getAllUsers = (): User[] => {
+    const users = getStoredUsers();
+    // Return users without passwords
+    return users.map(({ password, ...user }) => user);
+  };
+
+  const deleteUser = (userId: string): boolean => {
+    const users = getStoredUsers();
+    const updatedUsers = users.filter(u => u.id !== userId);
+
+    if (updatedUsers.length < users.length) {
+      saveUsers(updatedUsers);
+
+      // If the deleted user is currently logged in, log them out
+      if (user && user.id === userId) {
+        logout();
+      }
+      return true;
+    }
+    return false;
   };
 
   const value: AuthContextType = {
@@ -132,6 +183,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     login,
     logout,
     updateUserRole,
+    createUser,
+    getAllUsers,
+    deleteUser,
   };
 
   return (
