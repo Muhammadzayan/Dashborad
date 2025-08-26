@@ -213,9 +213,30 @@ const LoginPage = () => {
         <div className="space-y-6">
           <Card className="shadow-2xl border-0 bg-white/90 backdrop-blur-md hover:shadow-3xl transition-all duration-300 hover:scale-[1.02]">
             <CardHeader className="space-y-1 text-center">
-              <CardTitle className="text-2xl font-bold">Welcome Back</CardTitle>
+              <div className="flex items-center justify-center space-x-1 mb-4">
+                <Button
+                  variant={!isRegistering ? "default" : "ghost"}
+                  className="px-6"
+                  onClick={() => setIsRegistering(false)}
+                >
+                  Login
+                </Button>
+                <Button
+                  variant={isRegistering ? "default" : "ghost"}
+                  className="px-6"
+                  onClick={() => setIsRegistering(true)}
+                >
+                  Register
+                </Button>
+              </div>
+              <CardTitle className="text-2xl font-bold">
+                {isRegistering ? 'Create Account' : 'Welcome Back'}
+              </CardTitle>
               <CardDescription>
-                Enter your credentials to access the insurance portal
+                {isRegistering
+                  ? 'Create a new account to access our insurance services'
+                  : 'Enter your credentials to access the insurance portal'
+                }
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
