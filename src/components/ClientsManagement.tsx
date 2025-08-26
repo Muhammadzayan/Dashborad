@@ -73,44 +73,39 @@ const ClientsManagement = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (editingClient) {
       // Update existing client
-      setClients(clients.map(c => c.id === editingClient.id ? {
-        ...editingClient,
+      updateClient(editingClient.id, {
         name: formData.name,
         cnic: formData.cnic,
         contact: formData.contact,
         email: formData.email,
         address: formData.address,
         agentId: formData.agentId
-      } : c));
-      
+      });
+
       toast({
         title: "Client Updated",
         description: "Client information has been successfully updated.",
       });
     } else {
       // Add new client
-      const newClient: Client = {
-        id: Date.now().toString(),
+      addClient({
         name: formData.name,
         cnic: formData.cnic,
         contact: formData.contact,
         email: formData.email,
         address: formData.address,
-        agentId: formData.agentId,
-        createdAt: new Date().toISOString().split('T')[0]
-      };
-      
-      setClients([...clients, newClient]);
-      
+        agentId: formData.agentId
+      });
+
       toast({
         title: "Client Added",
         description: "New client has been successfully registered.",
       });
     }
-    
+
     setIsDialogOpen(false);
     resetForm();
   };
