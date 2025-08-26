@@ -155,9 +155,16 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
       description: 'Your active policies'
     },
     {
+      id: 'services',
+      label: 'Browse Services',
+      icon: Shield,
+      color: 'bg-purple-500',
+      description: 'Explore insurance options'
+    },
+    {
       id: 'claims',
       label: 'Claims',
-      icon: Shield,
+      icon: AlertTriangle,
       color: 'bg-yellow-500',
       description: 'File and track claims'
     },
