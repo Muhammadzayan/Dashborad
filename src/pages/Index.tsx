@@ -43,17 +43,103 @@ const ServicePlaceholder = ({ serviceName, description, icon: Icon }: {
 // User-specific components
 const MyPoliciesView = () => {
   const { user } = useAuth();
+  const { policies, carPolicies, bikePolicies, lifePolicies, travelPolicies } = useData();
+
+  // Get user's policies from all insurance types
+  const userPolicies = policies.filter(p => p.clientName === user?.name || p.clientId === user?.id);
+  const userCarPolicies = carPolicies.filter(p => p.clientName === user?.name);
+  const userBikePolicies = bikePolicies.filter(p => p.clientName === user?.name);
+  const userLifePolicies = lifePolicies.filter(p => p.clientName === user?.name);
+  const userTravelPolicies = travelPolicies.filter(p => p.clientName === user?.name);
+
+  const allUserPolicies = [
+    ...userPolicies.map(p => ({ ...p, type: 'General', icon: FileText })),
+    ...userCarPolicies.map(p => ({ ...p, type: 'Car Insurance', icon: Car })),
+    ...userBikePolicies.map(p => ({ ...p, type: 'Bike Insurance', icon: Bike })),
+    ...userLifePolicies.map(p => ({ ...p, type: 'Life Insurance', icon: Heart })),
+    ...userTravelPolicies.map(p => ({ ...p, type: 'Travel Insurance', icon: Plane }))
+  ];
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-PK', {
+      style: 'currency',
+      currency: 'PKR',
+      minimumFractionDigits: 0,
+    }).format(amount);
+  };
+
   return (
     <div className="space-y-4 lg:space-y-6">
       <div className="bg-gradient-primary p-4 lg:p-6 rounded-xl text-white">
         <h2 className="text-xl lg:text-2xl font-bold mb-2">Welcome back, {user?.name}!</h2>
         <p className="text-blue-100">Here are your personal insurance policies</p>
+        <div className="flex items-center gap-4 mt-4">
+          <div className="flex items-center gap-2">
+            <Shield className="h-5 w-5" />
+            <span className="text-sm">Active Policies: {allUserPolicies.length}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <FileText className="h-5 w-5" />
+            <span className="text-sm">Total Coverage: {formatCurrency(allUserPolicies.reduce((sum, p) => sum + (p.sumAssured || 0), 0))}</span>
+          </div>
+        </div>
       </div>
-      <ServicePlaceholder 
-        serviceName="My Policies" 
-        description="View and manage your personal insurance policies and coverage details."
-        icon={() => <div className="text-2xl lg:text-4xl">📋</div>}
-      />
+
+      {allUserPolicies.length > 0 ? (
+        <div className="grid gap-4">
+          {allUserPolicies.map((policy, index) => (
+            <Card key={`${policy.type}-${policy.id}`} className="shadow-card">
+              <CardContent className="p-6">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                      <policy.icon className="h-6 w-6 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-lg">{policy.policyNo}</h3>
+                      <p className="text-muted-foreground">{policy.type}</p>
+                      <div className="flex items-center gap-4 mt-2 text-sm">
+                        <span>Premium: {formatCurrency(policy.premium)}</span>
+                        <span>Coverage: {formatCurrency(policy.sumAssured || 0)}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <Badge className={policy.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}>
+                    {policy.status}
+                  </Badge>
+                </div>
+                {policy.type === 'Car Insurance' && (
+                  <div className="mt-4 p-3 bg-muted rounded-lg">
+                    <p className="text-sm"><strong>Vehicle:</strong> {policy.vehicleMake} {policy.vehicleModel} ({policy.vehicleYear})</p>
+                    <p className="text-sm"><strong>Registration:</strong> {policy.registrationNo}</p>
+                  </div>
+                )}
+                {policy.type === 'Life Insurance' && (
+                  <div className="mt-4 p-3 bg-muted rounded-lg">
+                    <p className="text-sm"><strong>Plan:</strong> {policy.planType}</p>
+                    <p className="text-sm"><strong>Beneficiary:</strong> {policy.beneficiaryName} ({policy.beneficiaryRelation})</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      ) : (
+        <Card className="shadow-card">
+          <CardContent className="text-center py-12">
+            <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-muted-foreground mb-2">No Policies Found</h3>
+            <p className="text-sm text-muted-foreground mb-6">
+              You don't have any insurance policies yet. Contact our agents to get started.
+            </p>
+            <GetQuoteModal>
+              <Button className="bg-gradient-primary">
+                Get Your First Quote
+              </Button>
+            </GetQuoteModal>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };
