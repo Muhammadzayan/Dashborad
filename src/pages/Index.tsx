@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
 import { UserRoleProvider, useUserRole } from '@/contexts/UserRoleContext';
+import { DataProvider } from '@/contexts/DataContext';
 import LoginPage from '@/components/LoginPage';
 import DashboardLayout from '@/components/DashboardLayout';
 import DashboardHome from '@/components/DashboardHome';
