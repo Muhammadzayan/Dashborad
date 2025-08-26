@@ -186,6 +186,8 @@ const DashboardApp = () => {
         return <ProfileView />;
       case 'user-management':
         return <UserManagement />;
+      case 'leads-management':
+        return <LeadsManagement />;
       default:
         return <DashboardHome />;
     }
