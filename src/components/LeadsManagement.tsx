@@ -8,16 +8,16 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { 
-  Search, 
-  Mail, 
-  Phone, 
-  Eye, 
-  Edit, 
-  Trash2, 
-  Clock, 
-  CheckCircle, 
-  AlertCircle, 
+import {
+  Search,
+  Mail,
+  Phone,
+  Eye,
+  Edit,
+  Trash2,
+  Clock,
+  CheckCircle,
+  AlertCircle,
   XCircle,
   Car,
   Bike,
@@ -26,7 +26,8 @@ import {
   Building2,
   Activity,
   UserCheck,
-  Shield
+  Shield,
+  AlertTriangle
 } from 'lucide-react';
 import { useData } from '@/contexts/DataContext';
 import { QuoteLead } from '@/contexts/DataContext';
