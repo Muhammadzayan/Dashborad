@@ -150,6 +150,56 @@ const MyPoliciesView = () => {
           </CardContent>
         </Card>
       )}
+
+      {/* User Services Section */}
+      {userServices.length > 0 && (
+        <div className="space-y-4">
+          <h3 className="text-xl font-semibold">My Service Requests</h3>
+          <div className="grid gap-4">
+            {userServices.map((service) => (
+              <Card key={service.id} className="shadow-card">
+                <CardContent className="p-6">
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <Shield className="h-6 w-6 text-blue-600" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-lg">{service.serviceName}</h3>
+                        <p className="text-muted-foreground capitalize">{service.serviceType.replace('-', ' ')}</p>
+                        <p className="text-sm text-muted-foreground">Requested: {new Date(service.requestDate).toLocaleDateString()}</p>
+                      </div>
+                    </div>
+                    <Badge className={
+                      service.status === 'active' ? 'bg-green-100 text-green-800' :
+                      service.status === 'in_progress' ? 'bg-blue-100 text-blue-800' :
+                      service.status === 'requested' ? 'bg-yellow-100 text-yellow-800' :
+                      'bg-gray-100 text-gray-800'
+                    }>
+                      {service.status}
+                    </Badge>
+                  </div>
+                  {service.details && (
+                    <div className="mt-4 p-3 bg-muted rounded-lg">
+                      <div className="text-sm space-y-1">
+                        {service.serviceType === 'car-tracker' && service.details.vehicle && (
+                          <p><strong>Vehicle:</strong> {service.details.vehicle}</p>
+                        )}
+                        {service.serviceType === 'employee-life' && service.details.company && (
+                          <p><strong>Company:</strong> {service.details.company}</p>
+                        )}
+                        {service.details.plan && (
+                          <p><strong>Plan:</strong> {service.details.plan}</p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
