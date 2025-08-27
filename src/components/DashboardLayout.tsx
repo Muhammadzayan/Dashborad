@@ -86,6 +86,13 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
       category: 'main',
       requiresPermission: 'canViewReports'
     },
+    {
+      id: 'service-provision',
+      label: 'Provide Services',
+      icon: Settings,
+      category: 'main',
+      requiresPermission: 'canCreatePolicies'
+    },
   ];
 
   const insuranceServices = [
