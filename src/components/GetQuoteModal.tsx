@@ -67,6 +67,24 @@ const GetQuoteModal: React.FC<GetQuoteModalProps> = ({ children }) => {
         message: formData.message
       });
 
+      // Also track this as a user service if user is logged in
+      if (user?.id) {
+        const serviceType = insuranceTypes.find(t => t.value === formData.insuranceType);
+        addUserService({
+          userId: user.id,
+          serviceType: formData.insuranceType,
+          serviceName: serviceType?.label || 'Insurance Quote',
+          status: 'requested',
+          details: {
+            name: formData.name,
+            email: formData.email,
+            phone: formData.phone,
+            message: formData.message,
+            quoteType: 'general'
+          }
+        });
+      }
+
       setIsSuccess(true);
       
       toast({
