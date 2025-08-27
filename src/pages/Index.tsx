@@ -24,6 +24,7 @@ import CarTrackerService from '@/components/CarTrackerService';
 import EmployeeLifeService from '@/components/EmployeeLifeService';
 import ServicesPage from '@/components/ServicesPage';
 import UserProfileEdit from '@/components/UserProfileEdit';
+import ServiceProvision from '@/components/ServiceProvision';
 
 // Service placeholder components for remaining services
 const ServicePlaceholder = ({ serviceName, description, icon: Icon }: { 
