@@ -95,6 +95,7 @@ const roleConfigs: Record<UserRole, RoleConfig> = {
       'car-tracker',
       'employee-life',
       'leads-management',
+      'service-provision',
       'services',
       'reports'
     ],
