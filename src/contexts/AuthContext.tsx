@@ -17,6 +17,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
   updateUserRole: (role: UserRole) => void;
+  updateUserProfile: (profileData: Partial<Pick<User, 'name' | 'email' | 'department' | 'agentId'>>) => Promise<boolean>;
   createUser: (userData: Omit<User, 'id'> & { password: string }) => Promise<boolean>;
   getAllUsers: () => User[];
   deleteUser: (userId: string) => boolean;
@@ -137,6 +138,38 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const updateUserProfile = async (profileData: Partial<Pick<User, 'name' | 'email' | 'department' | 'agentId'>>): Promise<boolean> => {
+    if (!user) return false;
+
+    try {
+      const users = getStoredUsers();
+
+      // Check if email is being changed and if it already exists
+      if (profileData.email && profileData.email !== user.email) {
+        const emailExists = users.find(u => u.id !== user.id && u.email.toLowerCase() === profileData.email.toLowerCase());
+        if (emailExists) {
+          return false; // Email already exists
+        }
+      }
+
+      // Update the user in the stored users list
+      const updatedUsers = users.map(u =>
+        u.id === user.id ? { ...u, ...profileData } : u
+      );
+      saveUsers(updatedUsers);
+
+      // Update the current user in context and localStorage
+      const updatedUser = { ...user, ...profileData };
+      setUser(updatedUser);
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+
+      return true;
+    } catch (error) {
+      console.error('Failed to update user profile:', error);
+      return false;
+    }
+  };
+
   const createUser = async (userData: Omit<User, 'id'> & { password: string }): Promise<boolean> => {
     const users = getStoredUsers();
 
@@ -183,6 +216,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     login,
     logout,
     updateUserRole,
+    updateUserProfile,
     createUser,
     getAllUsers,
     deleteUser,
