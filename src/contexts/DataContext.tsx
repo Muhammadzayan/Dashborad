@@ -204,21 +204,32 @@ interface DataProviderProps {
   children: ReactNode;
 }
 
-// Storage helpers
+// Enhanced storage helpers with better error handling
 function getStoredData<T>(key: string, defaultValue: T): T {
   try {
     const stored = localStorage.getItem(key);
-    return stored ? JSON.parse(stored) : defaultValue;
-  } catch {
+    if (!stored) {
+      console.log(`No stored data found for key: ${key}, using default value`);
+      return defaultValue;
+    }
+    const parsed = JSON.parse(stored);
+    console.log(`Successfully loaded data for key: ${key}`);
+    return parsed;
+  } catch (error) {
+    console.error(`Failed to parse stored data for key: ${key}`, error);
     return defaultValue;
   }
 }
 
-function setStoredData<T>(key: string, data: T): void {
+function setStoredData<T>(key: string, data: T): boolean {
   try {
-    localStorage.setItem(key, JSON.stringify(data));
+    const serialized = JSON.stringify(data);
+    localStorage.setItem(key, serialized);
+    console.log(`Successfully stored data for key: ${key}`);
+    return true;
   } catch (error) {
-    console.error('Failed to store data:', error);
+    console.error(`Failed to store data for key: ${key}`, error);
+    return false;
   }
 }
 
@@ -264,21 +275,66 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
     getStoredData('igilife_user_services', [])
   );
 
-  // Persist data changes
-  useEffect(() => setStoredData('igilife_clients', clients), [clients]);
-  useEffect(() => setStoredData('igilife_policies', policies), [policies]);
-  useEffect(() => setStoredData('igilife_car_policies', carPolicies), [carPolicies]);
-  useEffect(() => setStoredData('igilife_bike_policies', bikePolicies), [bikePolicies]);
-  useEffect(() => setStoredData('igilife_life_policies', lifePolicies), [lifePolicies]);
-  useEffect(() => setStoredData('igilife_travel_policies', travelPolicies), [travelPolicies]);
-  useEffect(() => setStoredData('igilife_employee_health_policies', employeeHealthPolicies), [employeeHealthPolicies]);
-  useEffect(() => setStoredData('igilife_corporate_policies', corporatePolicies), [corporatePolicies]);
-  useEffect(() => setStoredData('igilife_quote_leads', quoteLeads), [quoteLeads]);
-  useEffect(() => setStoredData('igilife_user_services', userServices), [userServices]);
+  // Enhanced data persistence with validation
+  useEffect(() => {
+    if (clients.length >= 0) setStoredData('igilife_clients', clients);
+  }, [clients]);
 
-  // Generic helper functions
-  const generateId = () => Date.now().toString();
+  useEffect(() => {
+    if (policies.length >= 0) setStoredData('igilife_policies', policies);
+  }, [policies]);
+
+  useEffect(() => {
+    if (carPolicies.length >= 0) setStoredData('igilife_car_policies', carPolicies);
+  }, [carPolicies]);
+
+  useEffect(() => {
+    if (bikePolicies.length >= 0) setStoredData('igilife_bike_policies', bikePolicies);
+  }, [bikePolicies]);
+
+  useEffect(() => {
+    if (lifePolicies.length >= 0) setStoredData('igilife_life_policies', lifePolicies);
+  }, [lifePolicies]);
+
+  useEffect(() => {
+    if (travelPolicies.length >= 0) setStoredData('igilife_travel_policies', travelPolicies);
+  }, [travelPolicies]);
+
+  useEffect(() => {
+    if (employeeHealthPolicies.length >= 0) setStoredData('igilife_employee_health_policies', employeeHealthPolicies);
+  }, [employeeHealthPolicies]);
+
+  useEffect(() => {
+    if (corporatePolicies.length >= 0) setStoredData('igilife_corporate_policies', corporatePolicies);
+  }, [corporatePolicies]);
+
+  useEffect(() => {
+    if (quoteLeads.length >= 0) {
+      const success = setStoredData('igilife_quote_leads', quoteLeads);
+      if (success) {
+        console.log(`Quote leads persisted: ${quoteLeads.length} records`);
+      }
+    }
+  }, [quoteLeads]);
+
+  useEffect(() => {
+    if (userServices.length >= 0) {
+      const success = setStoredData('igilife_user_services', userServices);
+      if (success) {
+        console.log(`User services persisted: ${userServices.length} records`);
+      }
+    }
+  }, [userServices]);
+
+  // Enhanced helper functions
+  const generateId = () => {
+    const timestamp = Date.now();
+    const random = Math.random().toString(36).substr(2, 9);
+    return `${timestamp}_${random}`;
+  };
+
   const getCurrentDate = () => new Date().toISOString().split('T')[0];
+  const getCurrentDateTime = () => new Date().toISOString();
 
   // Client functions
   const addClient = (clientData: Omit<Client, 'id' | 'createdAt'>) => {
@@ -466,17 +522,36 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
     setQuoteLeads(prev => prev.filter(lead => lead.id !== id));
   };
 
-  // User Service functions
+  // Enhanced User Service functions
   const addUserService = (serviceData: Omit<UserService, 'id' | 'requestDate'>) => {
+    if (!serviceData.userId || !serviceData.serviceType || !serviceData.serviceName) {
+      console.error('Invalid service data provided:', serviceData);
+      return;
+    }
+
     const newService: UserService = {
       ...serviceData,
       id: generateId(),
-      requestDate: getCurrentDate(),
+      requestDate: getCurrentDateTime(),
     };
+
     console.log('Adding user service:', newService);
+
     setUserServices(prev => {
+      // Check for duplicates
+      const isDuplicate = prev.some(service =>
+        service.userId === newService.userId &&
+        service.serviceType === newService.serviceType &&
+        service.serviceName === newService.serviceName
+      );
+
+      if (isDuplicate) {
+        console.warn('Duplicate service request detected, updating existing instead');
+        return prev;
+      }
+
       const updated = [...prev, newService];
-      console.log('Updated user services:', updated);
+      console.log(`User services updated: ${updated.length} total services`);
       return updated;
     });
   };
