@@ -16,7 +16,8 @@ interface GetQuoteModalProps {
 }
 
 const GetQuoteModal: React.FC<GetQuoteModalProps> = ({ children }) => {
-  const { addQuoteLead } = useData();
+  const { addQuoteLead, addUserService } = useData();
+  const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
