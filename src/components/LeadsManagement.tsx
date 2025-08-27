@@ -323,7 +323,15 @@ const LeadsManagement = () => {
                   const StatusIcon = getStatusIcon(lead.status);
                   
                   return (
-                    <TableRow key={lead.id} className="hover:bg-muted/30">
+                    <TableRow key={lead.id} className={`hover:bg-muted/30 ${selectedLeads.includes(lead.id) ? 'bg-blue-50' : ''}`}>
+                      <TableCell>
+                        <input
+                          type="checkbox"
+                          checked={selectedLeads.includes(lead.id)}
+                          onChange={() => handleSelectLead(lead.id)}
+                          className="rounded border-gray-300"
+                        />
+                      </TableCell>
                       <TableCell>
                         <div>
                           <div className="font-medium">{lead.name}</div>
