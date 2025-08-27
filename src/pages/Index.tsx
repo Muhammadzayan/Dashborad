@@ -678,7 +678,7 @@ const DashboardApp = () => {
 
     switch (activeTab) {
       case 'dashboard':
-        return <DashboardHome />;
+        return <EnhancedDashboardHome />;
       case 'policies':
         return <PoliciesManagement />;
       case 'my-policies':
