@@ -168,16 +168,44 @@ const MyPoliciesView = () => {
                       <div>
                         <h3 className="font-semibold text-lg">{service.serviceName}</h3>
                         <p className="text-muted-foreground capitalize">{service.serviceType.replace('-', ' ')}</p>
-                        <p className="text-sm text-muted-foreground">Requested: {new Date(service.requestDate).toLocaleDateString()}</p>
+                        <div className="flex items-center gap-4 mt-1">
+                          <p className="text-sm text-muted-foreground">
+                            Requested: {new Date(service.requestDate).toLocaleDateString('en-PK', {
+                              year: 'numeric',
+                              month: 'short',
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}
+                          </p>
+                          {service.activationDate && (
+                            <p className="text-sm text-green-600">
+                              Activated: {new Date(service.activationDate).toLocaleDateString('en-PK', {
+                                year: 'numeric',
+                                month: 'short',
+                                day: 'numeric'
+                              })}
+                            </p>
+                          )}
+                        </div>
                       </div>
                     </div>
                     <Badge className={
                       service.status === 'active' ? 'bg-green-100 text-green-800' :
                       service.status === 'in_progress' ? 'bg-blue-100 text-blue-800' :
                       service.status === 'requested' ? 'bg-yellow-100 text-yellow-800' :
+                      service.status === 'completed' ? 'bg-purple-100 text-purple-800' :
+                      service.status === 'cancelled' ? 'bg-red-100 text-red-800' :
                       'bg-gray-100 text-gray-800'
                     }>
-                      {service.status}
+                      <div className="flex items-center gap-1">
+                        {service.status === 'active' && <CheckCircle className="h-3 w-3" />}
+                        {service.status === 'in_progress' && <Clock className="h-3 w-3" />}
+                        {service.status === 'requested' && <AlertCircle className="h-3 w-3" />}
+                        {service.status === 'completed' && <CheckCircle className="h-3 w-3" />}
+                        {service.status === 'cancelled' && <X className="h-3 w-3" />}
+                        <span className="capitalize">{service.status.replace('_', ' ')}</span>
+                      </div>
                     </Badge>
                   </div>
                   {service.details && (
