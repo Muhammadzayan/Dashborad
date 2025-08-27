@@ -59,6 +59,9 @@ const MyPoliciesView = () => {
   const userLifePolicies = lifePolicies.filter(p => p.clientName === user?.name);
   const userTravelPolicies = travelPolicies.filter(p => p.clientName === user?.name);
 
+  // Get user's requested services
+  const userServices = getUserServices(user?.id || '');
+
   const allUserPolicies = [
     ...userPolicies.map(p => ({ ...p, type: 'General', icon: FileText })),
     ...userCarPolicies.map(p => ({ ...p, type: 'Car Insurance', icon: Car })),
