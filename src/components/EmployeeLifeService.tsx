@@ -113,6 +113,27 @@ Special Requirements: ${formData.specialRequirements || 'None'}`;
         message: message
       });
 
+      // Also track this as a user service if user is logged in
+      if (user?.id) {
+        addUserService({
+          userId: user.id,
+          serviceType: 'employee-life',
+          serviceName: `Employee Life Insurance - ${selectedPlan?.label}`,
+          status: 'requested',
+          details: {
+            company: formData.companyName,
+            businessType: formData.businessType,
+            employees: formData.numberOfEmployees,
+            contactPerson: formData.contactPerson,
+            plan: selectedPlan?.label,
+            price: selectedPlan?.price,
+            coverage: selectedPlan?.coverage,
+            email: formData.email,
+            phone: formData.contactNumber
+          }
+        });
+      }
+
       setIsSuccess(true);
       
       toast({
