@@ -65,16 +65,15 @@ const roleConfigs: Record<UserRole, RoleConfig> = {
       'policies',
       'clients',
       'car-insurance',
-      'car-tracker',
       'bike-insurance',
       'life-insurance',
-      'employee-life',
       'corporate-insurance',
       'travel-insurance',
       'employee-health',
       'reports',
       'settings',
-      'user-management'
+      'user-management',
+      'leads-management'
     ],
   },
   agent: {
@@ -91,19 +90,32 @@ const roleConfigs: Record<UserRole, RoleConfig> = {
       'life-insurance',
       'travel-insurance',
       'employee-health',
-      'reports'
+      'corporate-insurance',
+      'car-tracker',
+      'employee-life',
+      'reports',
+      'leads-management'
     ],
   },
   user: {
     role: 'user',
     title: 'Client',
-    description: 'View personal policies and make claims',
+    description: 'View personal policies and access services',
     permissions: defaultPermissions.user,
     allowedServices: [
       'dashboard',
       'my-policies',
       'claims',
-      'profile'
+      'profile',
+      'services',
+      'car-tracker',
+      'employee-life',
+      'car-insurance',
+      'bike-insurance',
+      'life-insurance',
+      'travel-insurance',
+      'employee-health',
+      'corporate-insurance'
     ],
   },
 };
