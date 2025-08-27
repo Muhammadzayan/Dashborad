@@ -673,7 +673,7 @@ const DashboardApp = () => {
       case 'claims':
         return <ClaimsView />;
       case 'profile':
-        return <ProfileView />;
+        return <UserProfileEdit />;
       case 'user-management':
         return <UserManagement />;
       case 'leads-management':
