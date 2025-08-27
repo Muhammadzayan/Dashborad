@@ -91,10 +91,7 @@ const roleConfigs: Record<UserRole, RoleConfig> = {
       'travel-insurance',
       'employee-health',
       'corporate-insurance',
-      'car-tracker',
-      'employee-life',
-      'reports',
-      'leads-management'
+      'reports'
     ],
   },
   user: {
