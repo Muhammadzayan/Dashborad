@@ -32,6 +32,16 @@ import { useUserRole } from '@/contexts/UserRoleContext';
 import { useData } from '@/contexts/DataContext';
 import GetQuoteModal from './GetQuoteModal';
 
+// Simple Progress component
+const Progress = ({ value, className }: { value: number; className?: string }) => (
+  <div className={`w-full bg-gray-200 rounded-full ${className}`}>
+    <div
+      className="bg-blue-600 h-full rounded-full transition-all duration-300 ease-in-out"
+      style={{ width: `${Math.min(100, Math.max(0, value))}%` }}
+    ></div>
+  </div>
+);
+
 const EnhancedDashboardHome = () => {
   const { user } = useAuth();
   const { currentRole, roleConfig } = useUserRole();
