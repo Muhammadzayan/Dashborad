@@ -619,7 +619,11 @@ import {
   Bike,
   Heart,
   Plane,
-  Shield
+  Shield,
+  Clock,
+  AlertCircle,
+  X,
+  CheckCircle
 } from 'lucide-react';
 
 const DashboardApp = () => {
