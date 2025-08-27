@@ -114,60 +114,80 @@ export interface QuoteLead {
   assignedAgent?: string;
 }
 
+// User service tracking
+export interface UserService {
+  id: string;
+  userId: string;
+  serviceType: string;
+  serviceName: string;
+  status: 'requested' | 'in_progress' | 'active' | 'completed' | 'cancelled';
+  requestDate: string;
+  activationDate?: string;
+  details: any;
+  policyNo?: string;
+}
+
 interface DataContextType {
   // Clients
   clients: Client[];
   addClient: (client: Omit<Client, 'id' | 'createdAt'>) => void;
   updateClient: (id: string, client: Partial<Client>) => void;
   deleteClient: (id: string) => void;
-  
+
   // Policies
   policies: Policy[];
   addPolicy: (policy: Omit<Policy, 'id' | 'createdAt'>) => void;
   updatePolicy: (id: string, policy: Partial<Policy>) => void;
   deletePolicy: (id: string) => void;
-  
+
   // Car Insurance
   carPolicies: CarInsurancePolicy[];
   addCarPolicy: (policy: Omit<CarInsurancePolicy, 'id' | 'createdAt'>) => void;
   updateCarPolicy: (id: string, policy: Partial<CarInsurancePolicy>) => void;
   deleteCarPolicy: (id: string) => void;
-  
+
   // Bike Insurance
   bikePolicies: BikeInsurancePolicy[];
   addBikePolicy: (policy: Omit<BikeInsurancePolicy, 'id' | 'createdAt'>) => void;
   updateBikePolicy: (id: string, policy: Partial<BikeInsurancePolicy>) => void;
   deleteBikePolicy: (id: string) => void;
-  
+
   // Life Insurance
   lifePolicies: LifeInsurancePolicy[];
   addLifePolicy: (policy: Omit<LifeInsurancePolicy, 'id' | 'createdAt'>) => void;
   updateLifePolicy: (id: string, policy: Partial<LifeInsurancePolicy>) => void;
   deleteLifePolicy: (id: string) => void;
-  
+
   // Travel Insurance
   travelPolicies: TravelInsurancePolicy[];
   addTravelPolicy: (policy: Omit<TravelInsurancePolicy, 'id' | 'createdAt'>) => void;
   updateTravelPolicy: (id: string, policy: Partial<TravelInsurancePolicy>) => void;
   deleteTravelPolicy: (id: string) => void;
-  
+
   // Employee Health
   employeeHealthPolicies: EmployeeHealthPolicy[];
   addEmployeeHealthPolicy: (policy: Omit<EmployeeHealthPolicy, 'id' | 'createdAt'>) => void;
   updateEmployeeHealthPolicy: (id: string, policy: Partial<EmployeeHealthPolicy>) => void;
   deleteEmployeeHealthPolicy: (id: string) => void;
-  
+
   // Corporate Insurance
   corporatePolicies: CorporateInsurancePolicy[];
   addCorporatePolicy: (policy: Omit<CorporateInsurancePolicy, 'id' | 'createdAt'>) => void;
   updateCorporatePolicy: (id: string, policy: Partial<CorporateInsurancePolicy>) => void;
   deleteCorporatePolicy: (id: string) => void;
-  
+
   // Quote Leads
   quoteLeads: QuoteLead[];
   addQuoteLead: (lead: Omit<QuoteLead, 'id' | 'createdAt' | 'status'>) => void;
   updateQuoteLead: (id: string, lead: Partial<QuoteLead>) => void;
   deleteQuoteLead: (id: string) => void;
+
+  // User Services
+  userServices: UserService[];
+  addUserService: (service: Omit<UserService, 'id' | 'requestDate'>) => void;
+  updateUserService: (id: string, service: Partial<UserService>) => void;
+  getUserServices: (userId: string) => UserService[];
+  deleteUserService: (id: string) => void;
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
@@ -236,8 +256,12 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
     getStoredData('igilife_corporate_policies', [])
   );
   
-  const [quoteLeads, setQuoteLeads] = useState<QuoteLead[]>(() => 
+  const [quoteLeads, setQuoteLeads] = useState<QuoteLead[]>(() =>
     getStoredData('igilife_quote_leads', [])
+  );
+
+  const [userServices, setUserServices] = useState<UserService[]>(() =>
+    getStoredData('igilife_user_services', [])
   );
 
   // Persist data changes
@@ -250,6 +274,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
   useEffect(() => setStoredData('igilife_employee_health_policies', employeeHealthPolicies), [employeeHealthPolicies]);
   useEffect(() => setStoredData('igilife_corporate_policies', corporatePolicies), [corporatePolicies]);
   useEffect(() => setStoredData('igilife_quote_leads', quoteLeads), [quoteLeads]);
+  useEffect(() => setStoredData('igilife_user_services', userServices), [userServices]);
 
   // Generic helper functions
   const generateId = () => Date.now().toString();
@@ -423,17 +448,51 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
       createdAt: getCurrentDate(),
       status: 'new',
     };
-    setQuoteLeads(prev => [...prev, newLead]);
+    console.log('Adding new quote lead:', newLead);
+    setQuoteLeads(prev => {
+      const updated = [...prev, newLead];
+      console.log('Updated quote leads:', updated);
+      return updated;
+    });
   };
 
   const updateQuoteLead = (id: string, updates: Partial<QuoteLead>) => {
-    setQuoteLeads(prev => prev.map(lead => 
+    setQuoteLeads(prev => prev.map(lead =>
       lead.id === id ? { ...lead, ...updates } : lead
     ));
   };
 
   const deleteQuoteLead = (id: string) => {
     setQuoteLeads(prev => prev.filter(lead => lead.id !== id));
+  };
+
+  // User Service functions
+  const addUserService = (serviceData: Omit<UserService, 'id' | 'requestDate'>) => {
+    const newService: UserService = {
+      ...serviceData,
+      id: generateId(),
+      requestDate: getCurrentDate(),
+    };
+    console.log('Adding user service:', newService);
+    setUserServices(prev => {
+      const updated = [...prev, newService];
+      console.log('Updated user services:', updated);
+      return updated;
+    });
+  };
+
+  const updateUserService = (id: string, updates: Partial<UserService>) => {
+    setUserServices(prev => prev.map(service =>
+      service.id === id ? { ...service, ...updates } : service
+    ));
+  };
+
+  const getUserServices = (userId: string): UserService[] => {
+    return userServices.filter(service => service.userId === userId);
+  };
+
+  const deleteUserService = (id: string) => {
+    setUserServices(prev => prev.filter(service => service.id !== id));
   };
 
   const value: DataContextType = {
@@ -473,6 +532,11 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
     addQuoteLead,
     updateQuoteLead,
     deleteQuoteLead,
+    userServices,
+    addUserService,
+    updateUserService,
+    getUserServices,
+    deleteUserService,
   };
 
   return (
