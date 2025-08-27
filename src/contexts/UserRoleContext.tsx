@@ -73,7 +73,8 @@ const roleConfigs: Record<UserRole, RoleConfig> = {
       'reports',
       'settings',
       'user-management',
-      'leads-management'
+      'leads-management',
+      'service-provision'
     ],
   },
   agent: {
