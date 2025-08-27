@@ -73,6 +73,24 @@ Special Requirements: ${formData.specialRequirements || 'None'}`;
         message: message
       });
 
+      // Also track this as a user service if user is logged in
+      if (user?.id) {
+        addUserService({
+          userId: user.id,
+          serviceType: 'car-tracker',
+          serviceName: `Car Tracker - ${selectedPlan?.label}`,
+          status: 'requested',
+          details: {
+            vehicle: `${formData.vehicleMake} ${formData.vehicleModel} (${formData.vehicleYear})`,
+            registrationNo: formData.registrationNo,
+            plan: selectedPlan?.label,
+            price: selectedPlan?.price,
+            location: formData.currentLocation,
+            contactNumber: formData.contactNumber
+          }
+        });
+      }
+
       setIsSuccess(true);
       
       toast({
