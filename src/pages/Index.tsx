@@ -712,6 +712,8 @@ const DashboardApp = () => {
         return <UserManagement />;
       case 'leads-management':
         return <LeadsManagement />;
+      case 'service-provision':
+        return <ServiceProvision />;
       default:
         return <DashboardHome />;
     }
