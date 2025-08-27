@@ -50,7 +50,7 @@ const ServicePlaceholder = ({ serviceName, description, icon: Icon }: {
 // User-specific components
 const MyPoliciesView = () => {
   const { user } = useAuth();
-  const { policies, carPolicies, bikePolicies, lifePolicies, travelPolicies } = useData();
+  const { policies, carPolicies, bikePolicies, lifePolicies, travelPolicies, getUserServices } = useData();
 
   // Get user's policies from all insurance types
   const userPolicies = policies.filter(p => p.clientName === user?.name || p.clientId === user?.id);
