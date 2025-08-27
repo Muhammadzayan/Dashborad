@@ -38,6 +38,8 @@ const LeadsManagement = () => {
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedLead, setSelectedLead] = useState<QuoteLead | null>(null);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
+  const [selectedLeads, setSelectedLeads] = useState<string[]>([]);
+  const [showBulkDelete, setShowBulkDelete] = useState(false);
   const { toast } = useToast();
 
   const getInsuranceIcon = (type: string) => {
@@ -111,10 +113,40 @@ const LeadsManagement = () => {
 
   const handleDelete = (leadId: string) => {
     deleteQuoteLead(leadId);
+    // Remove from selected leads if it was selected
+    setSelectedLeads(prev => prev.filter(id => id !== leadId));
     toast({
       title: "Lead Deleted",
       description: "Lead has been successfully deleted.",
     });
+  };
+
+  const handleBulkDelete = () => {
+    selectedLeads.forEach(leadId => {
+      deleteQuoteLead(leadId);
+    });
+    setSelectedLeads([]);
+    setShowBulkDelete(false);
+    toast({
+      title: "Leads Deleted",
+      description: `${selectedLeads.length} leads have been successfully deleted.`,
+    });
+  };
+
+  const handleSelectLead = (leadId: string) => {
+    setSelectedLeads(prev =>
+      prev.includes(leadId)
+        ? prev.filter(id => id !== leadId)
+        : [...prev, leadId]
+    );
+  };
+
+  const handleSelectAll = () => {
+    if (selectedLeads.length === filteredLeads.length) {
+      setSelectedLeads([]);
+    } else {
+      setSelectedLeads(filteredLeads.map(lead => lead.id));
+    }
   };
 
   const handleViewLead = (lead: QuoteLead) => {
