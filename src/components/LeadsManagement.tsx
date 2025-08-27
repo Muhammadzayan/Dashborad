@@ -244,10 +244,27 @@ const LeadsManagement = () => {
       {/* Main Table */}
       <Card className="shadow-card">
         <CardHeader>
-          <CardTitle>Quote Leads Management</CardTitle>
-          <CardDescription>
-            Manage and track insurance quote requests from potential customers
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Quote Leads Management</CardTitle>
+              <CardDescription>
+                Manage and track insurance quote requests from potential customers
+              </CardDescription>
+            </div>
+            {selectedLeads.length > 0 && (
+              <div className="flex items-center gap-2">
+                <Badge variant="secondary">{selectedLeads.length} selected</Badge>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => setShowBulkDelete(true)}
+                >
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Delete Selected
+                </Button>
+              </div>
+            )}
+          </div>
         </CardHeader>
         <CardContent>
           {/* Filters */}
