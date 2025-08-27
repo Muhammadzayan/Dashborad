@@ -13,7 +13,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 
 const CarTrackerService = () => {
-  const { addQuoteLead } = useData();
+  const { addQuoteLead, addUserService } = useData();
   const { user } = useAuth();
   const [isRequestOpen, setIsRequestOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
