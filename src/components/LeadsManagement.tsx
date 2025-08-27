@@ -301,6 +301,14 @@ const LeadsManagement = () => {
             <Table>
               <TableHeader>
                 <TableRow className="bg-muted/50">
+                  <TableHead className="w-12">
+                    <input
+                      type="checkbox"
+                      checked={selectedLeads.length === filteredLeads.length && filteredLeads.length > 0}
+                      onChange={handleSelectAll}
+                      className="rounded border-gray-300"
+                    />
+                  </TableHead>
                   <TableHead>Customer</TableHead>
                   <TableHead>Insurance Type</TableHead>
                   <TableHead>Contact</TableHead>
