@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import GetQuoteModal from '@/components/GetQuoteModal';
 import DashboardLayout from '@/components/DashboardLayout';
 import DashboardHome from '@/components/DashboardHome';
+import EnhancedDashboardHome from '@/components/EnhancedDashboardHome';
 import PoliciesManagement from '@/components/PoliciesManagement';
 import ClientsManagement from '@/components/ClientsManagement';
 import CarInsuranceManagement from '@/components/CarInsuranceManagement';
