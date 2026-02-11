@@ -17,6 +17,10 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
   updateUserRole: (role: UserRole) => void;
+  updateUserProfile: (profileData: Partial<Pick<User, 'name' | 'email' | 'department' | 'agentId'>>) => Promise<boolean>;
+  createUser: (userData: Omit<User, 'id'> & { password: string }) => Promise<boolean>;
+  getAllUsers: () => User[];
+  deleteUser: (userId: string) => boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -33,34 +37,67 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
-// Mock users for demonstration
-const mockUsers: Record<string, User> = {
-  'admin@igilife.com': {
+// Default demo users
+const defaultUsers = [
+  {
     id: '1',
     name: 'Muhammad Zayan',
     email: 'admin@igilife.com',
-    role: 'admin',
+    role: 'admin' as UserRole,
     department: 'Administration',
-    agentId: 'ADM001'
+    agentId: 'ADM001',
+    password: 'password123'
   },
-  'agent@igilife.com': {
+  {
     id: '2',
     name: 'Sarah Ahmed',
     email: 'agent@igilife.com',
-    role: 'agent',
+    role: 'agent' as UserRole,
     department: 'Sales',
-    agentId: 'AGT001'
+    agentId: 'AGT001',
+    password: 'password123'
   },
-  'client@igilife.com': {
+  {
     id: '3',
     name: 'Ahmed Ali',
     email: 'client@igilife.com',
-    role: 'user',
-    department: 'Client'
+    role: 'user' as UserRole,
+    department: 'Client',
+    password: 'password123'
+  }
+];
+
+// User storage with passwords
+interface UserWithPassword extends User {
+  password: string;
+}
+
+// Initialize users in localStorage if not exists
+const initializeUsers = (): UserWithPassword[] => {
+  const storedUsers = localStorage.getItem('igilife_users');
+  if (storedUsers) {
+    return JSON.parse(storedUsers);
+  } else {
+    localStorage.setItem('igilife_users', JSON.stringify(defaultUsers));
+    return defaultUsers;
   }
 };
 
+// Get all users from localStorage
+const getStoredUsers = (): UserWithPassword[] => {
+  const storedUsers = localStorage.getItem('igilife_users');
+  return storedUsers ? JSON.parse(storedUsers) : defaultUsers;
+};
+
+// Save users to localStorage
+const saveUsers = (users: UserWithPassword[]): void => {
+  localStorage.setItem('igilife_users', JSON.stringify(users));
+};
+
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+  // Initialize users on first load
+  useState(() => initializeUsers());
+
   const [user, setUser] = useState<User | null>(() => {
     // Check if user is stored in localStorage
     const storedUser = localStorage.getItem('user');
@@ -68,14 +105,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   });
 
   const login = async (email: string, password: string): Promise<boolean> => {
-    // Mock authentication logic
-    if (password === 'password123') {
-      const foundUser = mockUsers[email.toLowerCase()];
-      if (foundUser) {
-        setUser(foundUser);
-        localStorage.setItem('user', JSON.stringify(foundUser));
-        return true;
-      }
+    const users = getStoredUsers();
+    const foundUser = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+
+    if (foundUser && foundUser.password === password) {
+      // Remove password from user object before storing in context
+      const { password: _, ...userWithoutPassword } = foundUser;
+      setUser(userWithoutPassword);
+      localStorage.setItem('user', JSON.stringify(userWithoutPassword));
+      return true;
     }
     return false;
   };
@@ -90,7 +128,86 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const updatedUser = { ...user, role };
       setUser(updatedUser);
       localStorage.setItem('user', JSON.stringify(updatedUser));
+
+      // Also update the user in the stored users list
+      const users = getStoredUsers();
+      const updatedUsers = users.map(u =>
+        u.id === user.id ? { ...u, role } : u
+      );
+      saveUsers(updatedUsers);
     }
+  };
+
+  const updateUserProfile = async (profileData: Partial<Pick<User, 'name' | 'email' | 'department' | 'agentId'>>): Promise<boolean> => {
+    if (!user) return false;
+
+    try {
+      const users = getStoredUsers();
+
+      // Check if email is being changed and if it already exists
+      if (profileData.email && profileData.email !== user.email) {
+        const emailExists = users.find(u => u.id !== user.id && u.email.toLowerCase() === profileData.email.toLowerCase());
+        if (emailExists) {
+          return false; // Email already exists
+        }
+      }
+
+      // Update the user in the stored users list
+      const updatedUsers = users.map(u =>
+        u.id === user.id ? { ...u, ...profileData } : u
+      );
+      saveUsers(updatedUsers);
+
+      // Update the current user in context and localStorage
+      const updatedUser = { ...user, ...profileData };
+      setUser(updatedUser);
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+
+      return true;
+    } catch (error) {
+      console.error('Failed to update user profile:', error);
+      return false;
+    }
+  };
+
+  const createUser = async (userData: Omit<User, 'id'> & { password: string }): Promise<boolean> => {
+    const users = getStoredUsers();
+
+    // Check if email already exists
+    if (users.find(u => u.email.toLowerCase() === userData.email.toLowerCase())) {
+      return false; // Email already exists
+    }
+
+    const newUser: UserWithPassword = {
+      ...userData,
+      id: Date.now().toString(), // Simple ID generation
+    };
+
+    const updatedUsers = [...users, newUser];
+    saveUsers(updatedUsers);
+    return true;
+  };
+
+  const getAllUsers = (): User[] => {
+    const users = getStoredUsers();
+    // Return users without passwords
+    return users.map(({ password, ...user }) => user);
+  };
+
+  const deleteUser = (userId: string): boolean => {
+    const users = getStoredUsers();
+    const updatedUsers = users.filter(u => u.id !== userId);
+
+    if (updatedUsers.length < users.length) {
+      saveUsers(updatedUsers);
+
+      // If the deleted user is currently logged in, log them out
+      if (user && user.id === userId) {
+        logout();
+      }
+      return true;
+    }
+    return false;
   };
 
   const value: AuthContextType = {
@@ -99,6 +216,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     login,
     logout,
     updateUserRole,
+    updateUserProfile,
+    createUser,
+    getAllUsers,
+    deleteUser,
   };
 
   return (

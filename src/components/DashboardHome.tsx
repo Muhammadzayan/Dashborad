@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { 
   FileText, 
   Users, 
@@ -26,6 +27,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Cell, 
 import { mockPolicies, mockClients } from '@/data/mockData';
 import { isExpiringSoon, getDaysUntil, formatDate } from '@/utils/dateUtils';
 import NotificationCenter from './NotificationCenter';
+import GetQuoteModal from './GetQuoteModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUserRole } from '@/contexts/UserRoleContext';
 
@@ -86,6 +88,11 @@ const DashboardHome = () => {
                     <ClipboardList className="h-5 w-5" />
                     <span className="text-sm">Active Policies: {userPolicies.length}</span>
                   </div>
+                  <GetQuoteModal>
+                    <Button variant="secondary" className="bg-white/20 hover:bg-white/30 text-white border-white/30">
+                      Get Additional Coverage
+                    </Button>
+                  </GetQuoteModal>
                 </div>
               </div>
               <div className="text-right">
@@ -343,6 +350,11 @@ const DashboardHome = () => {
                   <Users className="h-5 w-5" />
                   <span className="text-sm">Active Clients: {totalClients + 156}</span>
                 </div>
+                <GetQuoteModal>
+                  <Button variant="secondary" className="bg-white/20 hover:bg-white/30 text-white border-white/30">
+                    Generate Lead Quote
+                  </Button>
+                </GetQuoteModal>
               </div>
             </div>
             <div className="text-right">

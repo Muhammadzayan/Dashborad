@@ -2,11 +2,11 @@ import React, { ReactNode, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUserRole } from '@/contexts/UserRoleContext';
-import { 
-  LayoutDashboard, 
-  FileText, 
-  Users, 
-  LogOut, 
+import {
+  LayoutDashboard,
+  FileText,
+  Users,
+  LogOut,
   Building2,
   Settings,
   Car,
@@ -22,7 +22,8 @@ import {
   Eye,
   Lock,
   User,
-  ClipboardList
+  ClipboardList,
+  AlertTriangle
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
@@ -70,6 +71,27 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
       icon: Users,
       category: 'main',
       requiresPermission: 'canViewAllClients'
+    },
+    {
+      id: 'user-management',
+      label: 'User Management',
+      icon: UserCheck,
+      category: 'main',
+      requiresPermission: 'canManageUsers'
+    },
+    {
+      id: 'leads-management',
+      label: 'Quote Leads',
+      icon: ClipboardList,
+      category: 'main',
+      requiresPermission: 'canViewReports'
+    },
+    {
+      id: 'service-provision',
+      label: 'Provide Services',
+      icon: Settings,
+      category: 'main',
+      requiresPermission: 'canCreatePolicies'
     },
   ];
 
@@ -141,9 +163,16 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
       description: 'Your active policies'
     },
     {
+      id: 'services',
+      label: 'Browse Services',
+      icon: Shield,
+      color: 'bg-purple-500',
+      description: 'Explore insurance options'
+    },
+    {
       id: 'claims',
       label: 'Claims',
-      icon: Shield,
+      icon: AlertTriangle,
       color: 'bg-yellow-500',
       description: 'File and track claims'
     },
@@ -195,7 +224,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   return (
     <div className="min-h-screen bg-secondary/30">
       {/* Sidebar */}
-      <div className="fixed inset-y-0 left-0 z-50 w-72 bg-sidebar border-r border-sidebar-border">
+      <div className="fixed inset-y-0 left-0 z-50 w-72 bg-sidebar border-r border-sidebar-border shadow-xl backdrop-blur-sm">
         <div className="flex flex-col h-full">
           {/* Logo */}
           <div className="p-6 border-b border-sidebar-border">
@@ -349,7 +378,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
       {/* Main Content */}
       <div className="ml-72">
         {/* Header */}
-        <header className="bg-white border-b border-border px-6 py-4 shadow-sm">
+        <header className="bg-white/80 backdrop-blur-md border-b border-border px-6 py-4 shadow-lg sticky top-0 z-40">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold capitalize text-foreground flex items-center gap-2">
@@ -385,8 +414,10 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         </header>
 
         {/* Content */}
-        <main className="p-6">
-          {children}
+        <main className="p-6 min-h-screen bg-gradient-to-br from-background via-background to-secondary/30">
+          <div className="animate-fade-in">
+            {children}
+          </div>
         </main>
       </div>
     </div>

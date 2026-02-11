@@ -6,11 +6,12 @@ import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Plus, Edit, Trash2, Search, Mail, Phone, MapPin } from 'lucide-react';
-import { mockClients, Client } from '@/data/mockData';
+import { Client } from '@/data/mockData';
+import { useData } from '@/contexts/DataContext';
 import { useToast } from '@/hooks/use-toast';
 
 const ClientsManagement = () => {
-  const [clients, setClients] = useState<Client[]>(mockClients);
+  const { clients, addClient, updateClient, deleteClient } = useData();
   const [searchTerm, setSearchTerm] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingClient, setEditingClient] = useState<Client | null>(null);
@@ -63,7 +64,7 @@ const ClientsManagement = () => {
   };
 
   const handleDelete = (clientId: string) => {
-    setClients(clients.filter(c => c.id !== clientId));
+    deleteClient(clientId);
     toast({
       title: "Client Deleted",
       description: "Client has been successfully deleted.",
@@ -72,44 +73,39 @@ const ClientsManagement = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (editingClient) {
       // Update existing client
-      setClients(clients.map(c => c.id === editingClient.id ? {
-        ...editingClient,
+      updateClient(editingClient.id, {
         name: formData.name,
         cnic: formData.cnic,
         contact: formData.contact,
         email: formData.email,
         address: formData.address,
         agentId: formData.agentId
-      } : c));
-      
+      });
+
       toast({
         title: "Client Updated",
         description: "Client information has been successfully updated.",
       });
     } else {
       // Add new client
-      const newClient: Client = {
-        id: Date.now().toString(),
+      addClient({
         name: formData.name,
         cnic: formData.cnic,
         contact: formData.contact,
         email: formData.email,
         address: formData.address,
-        agentId: formData.agentId,
-        createdAt: new Date().toISOString().split('T')[0]
-      };
-      
-      setClients([...clients, newClient]);
-      
+        agentId: formData.agentId
+      });
+
       toast({
         title: "Client Added",
         description: "New client has been successfully registered.",
       });
     }
-    
+
     setIsDialogOpen(false);
     resetForm();
   };
